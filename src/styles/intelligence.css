@@ -13,6 +13,8 @@
     margin-top: 0;
     margin-bottom: 12px;
     font-size: 1rem;
+    font-weight: 700;
+    color: var(--text, #0F172A);
 }
 
 .span-2 {
@@ -33,15 +35,15 @@
     width: 9px;
     height: 9px;
     border-radius: 999px;
-    background: #22c55e;
+    background: #10B981;
     margin-left: 6px;
     animation: pulse 1.4s infinite;
 }
 
 @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
-    70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
 .track-wrap {
@@ -50,45 +52,54 @@
 }
 
 #trackMap, #routeMap {
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    border: 1px solid var(--border-color, #E2E8F0);
     border-radius: 12px;
     flex: 1;
     min-width: 0;
 }
 
 .track-side {
-    width: 180px;
+    width: 200px;
     flex-shrink: 0;
 }
 
 .track-item {
-    padding: 8px 10px;
+    padding: 10px 12px;
     border-radius: 10px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border-color, #E2E8F0);
+    background: #ffffff;
     margin-bottom: 8px;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.track-item:hover {
+    border-color: var(--border-hover, #CBD5E1);
+    background: #F8FAFC;
 }
 
 .track-item.selected {
-    border-color: #ff7a18;
-    background: #ffedd5;
+    border-color: var(--primary, #2563EB);
+    background: var(--primary-soft, #EFF6FF);
+    color: var(--primary-dark, #1E40AF);
+    font-weight: 700;
 }
 
 .badge {
     display: inline-block;
-    padding: 2px 8px;
+    padding: 3px 9px;
     border-radius: 999px;
     font-size: 0.72rem;
-    font-weight: 600;
+    font-weight: 700;
 }
 
-.badge-green { background: #dcfce7; color: #166534; }
-.badge-amber { background: #fef3c7; color: #92400e; }
-.badge-red { background: #fee2e2; color: #991b1b; }
-.badge-blue { background: #dbeafe; color: #1e40af; }
-.badge-gray { background: #f3f4f6; color: #374151; }
+.badge-green { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
+.badge-amber { background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE; }
+.badge-red { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
+.badge-blue { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+.badge-gray { background: #F1F5F9; color: #475569; border: 1px solid #E2E8F0; }
 
 .form-row {
     display: flex;
@@ -98,21 +109,36 @@
 
 .form-row input {
     flex: 1;
-    padding: 8px 10px;
-    border: 1px solid #e5e7eb;
+    padding: 9px 12px;
+    border: 1px solid var(--border-color, #E2E8F0);
     border-radius: 10px;
     font-family: inherit;
+    color: var(--text, #0F172A);
+    background: #ffffff;
+}
+
+.form-row input:focus {
+    outline: none;
+    border-color: var(--primary, #2563EB);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 .btn {
-    background: linear-gradient(135deg, #ff7a18, #ffb347);
+    background: var(--primary-gradient, linear-gradient(135deg, #2563EB, #1D4ED8));
     color: #fff;
     border: none;
     border-radius: 10px;
-    padding: 8px 16px;
+    padding: 9px 18px;
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
+    box-shadow: var(--primary-glow, 0 4px 14px rgba(37, 99, 235, 0.25));
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    background: var(--primary-hover, #1D4ED8);
+    transform: translateY(-1px);
 }
 
 .mini-list {
@@ -121,24 +147,26 @@
 }
 
 .mini-list div {
-    padding: 6px 0;
-    border-bottom: 1px dashed #eef0f4;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border-color, #E2E8F0);
 }
 
 .bar-row {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .bar-row .bar-label {
     display: flex;
     justify-content: space-between;
-    font-size: 0.8rem;
-    margin-bottom: 4px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-secondary, #334155);
+    margin-bottom: 5px;
 }
 
 .bar-track {
     height: 8px;
-    background: #f1f2f6;
+    background: #F1F5F9;
     border-radius: 999px;
     overflow: hidden;
 }
@@ -146,27 +174,36 @@
 .bar-fill {
     height: 100%;
     border-radius: 999px;
-    background: linear-gradient(135deg, #ff7a18, #ffb347);
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
     transition: width 0.6s ease;
 }
 
 .alert-item {
-    border-left: 4px solid #f59e0b;
-    background: #fffbeb;
-    padding: 8px 10px;
+    border-left: 4px solid var(--primary, #2563EB);
+    background: #F8FAFC;
+    padding: 10px 12px;
     border-radius: 8px;
     margin-bottom: 8px;
-    font-size: 0.83rem;
+    font-size: 0.84rem;
+    color: var(--text, #0F172A);
+    border: 1px solid var(--border-color, #E2E8F0);
+    border-left-width: 4px;
 }
 
 .alert-item.critical {
-    border-left-color: #ef4444;
-    background: #fef2f2;
+    border-left-color: #EF4444;
+    background: #FEF2F2;
+    color: #991B1B;
+    border-color: #FECACA;
+    border-left-color: #EF4444;
 }
 
 .alert-item.info {
-    border-left-color: #3b82f6;
-    background: #eff6ff;
+    border-left-color: #0284C7;
+    background: #F0F9FF;
+    color: #0369A1;
+    border-color: #BAE6FD;
+    border-left-color: #0284C7;
 }
 
 .analytics-row {
@@ -182,28 +219,34 @@
 .chat-log {
     height: 220px;
     overflow-y: auto;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
+    background: #F8FAFC;
+    border: 1px solid var(--border-color, #E2E8F0);
     border-radius: 12px;
-    padding: 10px;
+    padding: 12px;
     margin-bottom: 10px;
 }
 
 .chat-msg {
     margin-bottom: 8px;
-    padding: 8px 10px;
-    border-radius: 10px;
+    padding: 9px 13px;
+    border-radius: 12px;
     font-size: 0.85rem;
     max-width: 85%;
     white-space: pre-wrap;
+    line-height: 1.45;
 }
 
 .chat-msg.user {
-    background: #ffedd5;
+    background: var(--primary-gradient, linear-gradient(135deg, #2563EB, #1D4ED8));
+    color: #ffffff;
     margin-left: auto;
+    box-shadow: var(--primary-glow, 0 4px 12px rgba(37, 99, 235, 0.2));
 }
 
 .chat-msg.bot {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
+    background: #FFFFFF;
+    border: 1px solid var(--border-color, #E2E8F0);
+    color: var(--text, #0F172A);
+    font-weight: 500;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
 }

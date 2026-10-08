@@ -1,18 +1,23 @@
 import { useEffect, useRef } from "react";
 import { useFleet } from "../fleetStore.jsx";
 import startIntelligence from "../intelLogic.js";
+import LiveFleetMap from "../components/LiveFleetMap.jsx";
+import RouteOptimizerMap from "../components/RouteOptimizerMap.jsx";
 
 export default function Intelligence() {
   const { state } = useFleet();
   const ref = useRef(null);
 
   useEffect(() => {
+    // Normalize records: flatten populated ObjectId references to plain id strings
+    // so intelLogic.js can match vehicle_id/driver_id regardless of populate
+    const normalizeId = (v) => (v && typeof v === "object" ? v._id || v.id : v);
     window.FLEET_DATA = {
-      vehicles: state.vehicles,
-      drivers: state.drivers,
-      trips: state.trips,
-      maintenance: state.maintenance,
-      fuel: state.fuel,
+      vehicles:    state.vehicles.map(v => ({ ...v, id: v._id || v.id })),
+      drivers:     state.drivers.map(d => ({ ...d, id: d._id || d.id })),
+      trips:       state.trips.map(t => ({ ...t, id: t._id || t.id, vehicle_id: normalizeId(t.vehicle_id), driver_id: normalizeId(t.driver_id) })),
+      maintenance: state.maintenance.map(m => ({ ...m, id: m._id || m.id, vehicle_id: normalizeId(m.vehicle_id) })),
+      fuel:        state.fuel.map(f => ({ ...f, id: f._id || f.id, vehicle_id: normalizeId(f.vehicle_id) })),
     };
     const cleanup = startIntelligence();
     return cleanup;
@@ -35,21 +40,24 @@ export default function Intelligence() {
         <div className="card intel-card span-2">
           <h3>Live Vehicle Tracking <span className="live-dot"></span></h3>
           <div className="track-wrap">
-            <svg id="trackMap" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid meet"></svg>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <LiveFleetMap height="360px" mode="full" vehicles={state.vehicles} trips={state.trips} drivers={state.drivers} />
+            </div>
             <div className="track-side"><div id="trackList"></div></div>
+            <svg id="trackMap" style={{ display: "none" }}></svg>
           </div>
         </div>
 
-        <div className="card intel-card">
-          <h3>Route Optimization</h3>
-          <div className="form-row">
-            <input id="routeFrom" list="cityList" placeholder="Origin" />
-            <input id="routeTo" list="cityList" placeholder="Destination" />
-            <datalist id="cityList"></datalist>
-            <button className="btn" id="routeBtn">Optimize</button>
+        <div className="card intel-card span-2">
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+            <h3 style={{ margin: 0 }}>
+              Live Highway Route Optimization & Multi-Corridor Intelligence
+            </h3>
+            <span style={{ fontSize: "0.78rem", color: "#2563EB", fontWeight: 600, background: "#EFF6FF", padding: "4px 12px", borderRadius: 999, border: "1px solid #BFDBFE" }}>
+              Interactive OpenStreetMap Engine
+            </span>
           </div>
-          <svg id="routeMap" viewBox="0 0 640 220"></svg>
-          <div id="routeResult" className="mini-list"></div>
+          <RouteOptimizerMap />
         </div>
 
         <div className="card intel-card">

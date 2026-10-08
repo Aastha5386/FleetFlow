@@ -1,0 +1,72 @@
+{
+  "id": "/?source=pwa",
+  "name": "FleetFlow · Smart Fleet & Logistics ERP",
+  "short_name": "FleetFlow",
+  "description": "Enterprise fleet and logistics management system with live telemetry, dispatch board, predictive maintenance, and real-time road weather hazards.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#F8FAFC",
+  "theme_color": "#2563EB",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Fleet Overview",
+      "short_name": "Overview",
+      "description": "Executive dashboard & KPIs",
+      "url": "/dashboard",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Trip Registry",
+      "short_name": "Trips",
+      "description": "Dispatch & trip operations",
+      "url": "/trips",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Intelligence Hub",
+      "short_name": "Intel",
+      "description": "Live GPS tracking & route maps",
+      "url": "/intelligence",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Driver Portal",
+      "short_name": "Driver",
+      "description": "Active missions & checklist",
+      "url": "/driver/dashboard",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

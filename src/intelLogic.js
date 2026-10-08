@@ -28,9 +28,9 @@ export default function startIntelligence() {
     const svg = $("trackMap");
     if (!svg) return;
     let roads = "";
-    for (let y = 40; y < 360; y += 60) roads += `<line x1="0" y1="${y}" x2="640" y2="${y}" stroke="#e2e8f0" stroke-width="10"/>`;
-    for (let x = 60; x < 640; x += 90) roads += `<line x1="${x}" y1="0" x2="${x}" y2="360" stroke="#e2e8f0" stroke-width="10"/>`;
-    svg.innerHTML = roads + `<rect x="8" y="320" width="14" height="14" rx="3" fill="#3b82f6"/><text x="26" y="332" font-size="11" fill="#64748b">Garage</text>`;
+    for (let y = 40; y < 360; y += 60) roads += `<line x1="0" y1="${y}" x2="640" y2="${y}" stroke="#E2E8F0" stroke-width="10"/>`;
+    for (let x = 60; x < 640; x += 90) roads += `<line x1="${x}" y1="0" x2="${x}" y2="360" stroke="#E2E8F0" stroke-width="10"/>`;
+    svg.innerHTML = roads + `<rect x="8" y="320" width="14" height="14" rx="3" fill="#2563EB"/><text x="26" y="332" font-size="11" font-weight="600" fill="#0F172A">Garage</text>`;
     const list = $("trackList");
     list.innerHTML = "";
     D.vehicles.forEach((v) => {
@@ -39,20 +39,20 @@ export default function startIntelligence() {
         const pl = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
         pl.setAttribute("points", `${v.route.x1},${v.route.y1} ${v.route.x2},${v.route.y2}`);
         pl.setAttribute("fill", "none");
-        pl.setAttribute("stroke", "#fdba74");
-        pl.setAttribute("stroke-width", "3");
+        pl.setAttribute("stroke", "#3B82F6");
+        pl.setAttribute("stroke-width", "3.5");
         pl.setAttribute("stroke-dasharray", "6 4");
         svg.appendChild(pl);
       }
-      const color = v.status === "On Trip" ? "#ff7a18" : v.status === "In Shop" ? "#8b5cf6" : "#22c55e";
+      const color = v.status === "On Trip" ? "#2563EB" : v.status === "In Shop" ? "#F59E0B" : "#10B981";
       const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
       g.setAttribute("class", "vehicle-marker");
-      g.innerHTML = `<circle r="7" fill="${color}" stroke="#fff" stroke-width="2"/><text x="10" y="4" font-size="10" fill="#334155">${esc(v.license_plate)}</text>`;
+      g.innerHTML = `<circle r="8" fill="${color}" stroke="#fff" stroke-width="2.5"/><text x="12" y="4" font-size="11" font-weight="600" fill="#0F172A">${esc(v.license_plate)}</text>`;
       svg.appendChild(g);
       trackEls[v.id] = g;
       const item = document.createElement("div");
       item.className = "track-item";
-      item.innerHTML = `<b>${esc(v.license_plate)}</b> · ${esc(v.model_name)}<br><span class="badge ${v.status === 'On Trip' ? 'badge-amber' : v.status === 'In Shop' ? 'badge-blue' : 'badge-green'}">${esc(v.status)}</span>${trip ? `<br>${esc(trip.origin)} → ${esc(trip.destination)}` : ""}`;
+      item.innerHTML = `<b>${esc(v.license_plate)}</b> · ${esc(v.model_name)}<br><span class="badge ${v.status === 'On Trip' ? 'badge-blue' : v.status === 'In Shop' ? 'badge-amber' : 'badge-green'}">${esc(v.status)}</span>${trip ? `<br>${esc(trip.origin)} → ${esc(trip.destination)}` : ""}`;
       item.addEventListener("click", () => {
         document.querySelectorAll(".track-item").forEach(e => e.classList.remove("selected"));
         item.classList.add("selected");
@@ -73,10 +73,14 @@ export default function startIntelligence() {
 
   // ---------- Route Optimization ----------
   (function routeOpt() {
+    const cl = $("cityList");
+    const btn = $("routeBtn");
+    if (!cl || !btn) return;
+
     const cities = new Set();
     D.trips.forEach(t => { if (t.origin) cities.add(t.origin); if (t.destination) cities.add(t.destination); });
-    $("cityList").innerHTML = [...cities].map(c => `<option value="${esc(c)}">`).join("");
-    $("routeBtn").addEventListener("click", () => {
+    cl.innerHTML = [...cities].map(c => `<option value="${esc(c)}">`).join("");
+    btn.addEventListener("click", () => {
       const from = $("routeFrom").value.trim(), to = $("routeTo").value.trim();
       const svg = $("routeMap");
       if (!from || !to || from === to) { $("routeResult").innerHTML = "<div>Enter two different cities.</div>"; svg.innerHTML = ""; return; }
@@ -91,9 +95,9 @@ export default function startIntelligence() {
         return { ...o, timeH, liters, score: o.km * 0.5 + Number(liters) * 3 };
       });
       const best = options.reduce((a, b) => (a.score <= b.score ? a : b));
-      svg.innerHTML = `<circle cx="60" cy="110" r="7" fill="#22c55e"/><text x="75" y="114" font-size="12" fill="#334155">${esc(from)}</text><circle cx="580" cy="110" r="7" fill="#ef4444"/><text x="470" y="100" font-size="12" fill="#334155">${esc(to)}</text>` +
-        options.map((o, i) => `<polyline points="60,110 ${200 + i * 120},${60 + i * 60} 580,110" fill="none" stroke="${o.name === best.name ? '#ff7a18' : '#cbd5e1'}" stroke-width="${o.name === best.name ? 4 : 2}" ${o.name === best.name ? '' : 'stroke-dasharray="6 5"'}/>`).join("");
-      $("routeResult").innerHTML = options.map(o => `<div><b>${o.name}</b>: ${o.km} km · ~${o.timeH}h · ~${o.liters}L ${o.name === best.name ? '<span class="badge badge-amber">Recommended</span>' : ''}</div>`).join("");
+      svg.innerHTML = `<circle cx="60" cy="110" r="8" fill="#2563EB"/><text x="75" y="114" font-size="12" font-weight="600" fill="#0F172A">${esc(from)}</text><circle cx="580" cy="110" r="8" fill="#10B981" stroke="#059669" stroke-width="1.5"/><text x="470" y="100" font-size="12" font-weight="600" fill="#0F172A">${esc(to)}</text>` +
+        options.map((o, i) => `<polyline points="60,110 ${200 + i * 120},${60 + i * 60} 580,110" fill="none" stroke="${o.name === best.name ? '#2563EB' : '#94A3B8'}" stroke-width="${o.name === best.name ? 4 : 2}" ${o.name === best.name ? '' : 'stroke-dasharray="6 5"'}/>`).join("");
+      $("routeResult").innerHTML = options.map(o => `<div><b>${o.name}</b>: ${o.km} km · ~${o.timeH}h · ~${o.liters}L ${o.name === best.name ? '<span class="badge badge-green">Recommended</span>' : ''}</div>`).join("");
     });
   })();
 
@@ -114,7 +118,8 @@ export default function startIntelligence() {
   }
   function fuelInit() {
     const stats = fuelStats();
-    drawBars($("fuelChart"), stats.map(s => s.vehicle ? s.vehicle.license_plate : "?"), stats.map(s => s.kmpl.toFixed(1)), "#ff7a18");
+    const fuelColors = stats.map((_, i) => ["#2563EB", "#3B82F6", "#60A5FA", "#93C5FD"][i % 4]);
+    drawBars($("fuelChart"), stats.map(s => s.vehicle ? s.vehicle.license_plate : "?"), stats.map(s => s.kmpl.toFixed(1)), fuelColors);
     if (stats.length) {
       const best = stats.reduce((a, b) => (a.kmpl >= b.kmpl ? a : b));
       const worst = stats.reduce((a, b) => (a.kmpl <= b.kmpl ? a : b));
@@ -133,7 +138,7 @@ export default function startIntelligence() {
   }
 
   function predMaint() {
-    $("predMaint").innerHTML = maintenanceRisk().slice(0, 6).map(r => `<div class="bar-row"><div class="bar-label"><span>${esc(r.vehicle.license_plate)}</span><span>${r.risk}% risk</span></div><div class="bar-track"><div class="bar-fill" style="width:${r.risk}%;background:${r.risk >= 70 ? '#ef4444' : r.risk >= 40 ? '#f59e0b' : '#22c55e'}"></div></div><div class="bar-label" style="color:#6b7280">${r.daysSinceLast > 9000 ? 'No service logged' : r.daysSinceLast + ' days since service'} · ${r.count} records</div></div>`).join("");
+    $("predMaint").innerHTML = maintenanceRisk().slice(0, 6).map(r => `<div class="bar-row"><div class="bar-label"><span>${esc(r.vehicle.license_plate)}</span><span>${r.risk}% risk</span></div><div class="bar-track"><div class="bar-fill" style="width:${r.risk}%;background:${r.risk >= 70 ? '#EF4444' : r.risk >= 40 ? '#F59E0B' : '#10B981'}"></div></div><div class="bar-label" style="color:#64748B">${r.daysSinceLast > 9000 ? 'No service logged' : r.daysSinceLast + ' days since service'} · ${r.count} records</div></div>`).join("");
   }
 
   function driverPerf() {
@@ -143,7 +148,7 @@ export default function startIntelligence() {
       const score = Math.max(0, Math.min(100, Math.round((d.safety_score || 0) * 0.7 + completed * 3 - (expired ? 25 : 0) + (d.status === "Suspended" ? -20 : 0))));
       return { driver: d, score, expired, completed };
     }).sort((a, b) => b.score - a.score);
-    $("driverScores").innerHTML = perf.slice(0, 6).map(p => `<div class="bar-row"><div class="bar-label"><span>${esc(p.driver.name)} ${p.expired ? '<span class="badge badge-red">License expired</span>' : ''}</span><span>${p.score}</span></div><div class="bar-track"><div class="bar-fill" style="width:${p.score}%;background:${p.score >= 75 ? '#22c55e' : p.score >= 50 ? '#f59e0b' : '#ef4444'}"></div></div></div>`).join("");
+    $("driverScores").innerHTML = perf.slice(0, 6).map(p => `<div class="bar-row"><div class="bar-label"><span>${esc(p.driver.name)} ${p.expired ? '<span class="badge badge-red">License expired</span>' : ''}</span><span>${p.score}</span></div><div class="bar-track"><div class="bar-fill" style="width:${p.score}%;background:${p.score >= 75 ? '#10B981' : p.score >= 50 ? '#3B82F6' : '#EF4444'}"></div></div></div>`).join("");
   }
 
   function alerts() {
@@ -177,37 +182,56 @@ export default function startIntelligence() {
       risk = Math.round(Math.min(risk, 99));
       const label = risk >= 60 ? "High" : risk >= 35 ? "Medium" : "Low";
       const cls = risk >= 60 ? "badge-red" : risk >= 35 ? "badge-amber" : "badge-green";
-      return `<div class="bar-row"><div class="bar-label"><span>#${t.id} ${esc(t.origin)} → ${esc(t.destination)}</span><span class="badge ${cls}">${label} ${risk}%</span></div><div class="bar-track"><div class="bar-fill" style="width:${risk}%;background:${risk >= 60 ? '#ef4444' : risk >= 35 ? '#f59e0b' : '#22c55e'}"></div></div></div>`;
+      return `<div class="bar-row"><div class="bar-label"><span>#${t.id} ${esc(t.origin)} → ${esc(t.destination)}</span><span class="badge ${cls}">${label} ${risk}%</span></div><div class="bar-track"><div class="bar-fill" style="width:${risk}%;background:${risk >= 60 ? '#EF4444' : risk >= 35 ? '#F59E0B' : '#10B981'}"></div></div></div>`;
     }).join("") : "<div>No active trips to evaluate.</div>";
   }
 
   function charts() {
     const statuses = ["Draft", "Dispatched", "Completed", "Cancelled"];
     const counts = statuses.map(s => D.trips.filter(t => t.status === s).length);
-    drawBars($("tripsChart"), statuses, counts, "#3b82f6");
+    const tripColors = ["#94A3B8", "#2563EB", "#10B981", "#EF4444"];
+    drawBars($("tripsChart"), statuses, counts, tripColors);
     const mntCost = D.maintenance.reduce((s, m) => s + Number(m.cost), 0);
     const fuelCost = D.fuel.reduce((s, f) => s + Number(f.cost), 0);
-    drawDonut($("costChart"), [{ label: "Maintenance", value: mntCost, color: "#ff7a18" }, { label: "Fuel", value: fuelCost, color: "#3b82f6" }]);
+    drawDonut($("costChart"), [
+      { label: "Maintenance", value: mntCost, color: "#F59E0B" },
+      { label: "Fuel", value: fuelCost, color: "#2563EB" }
+    ]);
   }
 
-  function drawBars(canvas, labels, values, color) {
+  function drawBars(canvas, labels, values, colorOrColors) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     const w = canvas.width = canvas.offsetWidth || 300;
     const h = canvas.height = 220;
     ctx.clearRect(0, 0, w, h);
     const max = Math.max(...values.map(Number), 1);
-    const bw = Math.min(40, (w - 40) / Math.max(labels.length, 1) - 10);
+    const bw = Math.min(42, (w - 40) / Math.max(labels.length, 1) - 10);
     values.forEach((v, i) => {
       const x = 30 + i * ((w - 50) / Math.max(labels.length, 1));
-      const bh = (Number(v) / max) * (h - 60);
-      ctx.fillStyle = color;
+      const bh = (Number(v) / max) * (h - 65);
+      
+      let fill = Array.isArray(colorOrColors) ? colorOrColors[i % colorOrColors.length] : colorOrColors;
+      if (!fill || fill === "#2563EB") {
+        const grad = ctx.createLinearGradient(x, h - 30, x, h - 30 - bh);
+        grad.addColorStop(0, "#1D4ED8");
+        grad.addColorStop(1, "#3B82F6");
+        fill = grad;
+      }
+      ctx.fillStyle = fill;
       ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(x, h - 30 - bh, bw, bh, 4); else ctx.rect(x, h - 30 - bh, bw, bh);
+      if (ctx.roundRect) ctx.roundRect(x, h - 30 - bh, bw, bh, [6, 6, 0, 0]); else ctx.rect(x, h - 30 - bh, bw, bh);
       ctx.fill();
-      ctx.fillStyle = "#64748b"; ctx.font = "10px Poppins, sans-serif"; ctx.textAlign = "center";
+
+      // Subtle outline
+      ctx.strokeStyle = "rgba(15, 23, 42, 0.08)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.fillStyle = "#64748B"; ctx.font = "600 11px 'Plus Jakarta Sans', Inter, sans-serif"; ctx.textAlign = "center";
       ctx.fillText(labels[i], x + bw / 2, h - 12);
-      ctx.fillStyle = "#1f2937"; ctx.fillText(String(v), x + bw / 2, h - 36 - bh);
+      ctx.fillStyle = "#0F172A"; ctx.font = "bold 12px 'Plus Jakarta Sans', Inter, sans-serif";
+      ctx.fillText(String(v), x + bw / 2, h - 34 - bh);
     });
   }
 
@@ -224,21 +248,33 @@ export default function startIntelligence() {
       const slice = (p.value / total) * Math.PI * 2;
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, angle, angle + slice);
       ctx.fillStyle = p.color; ctx.fill();
+      ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
       angle += slice;
     });
-    ctx.beginPath(); ctx.arc(cx, cy, 40, 0, Math.PI * 2); ctx.fillStyle = "#fff"; ctx.fill();
-    ctx.fillStyle = "#1f2937"; ctx.font = "bold 13px Poppins, sans-serif"; ctx.textAlign = "center";
-    ctx.fillText("Costs", cx, cy + 4);
+    ctx.beginPath(); ctx.arc(cx, cy, 44, 0, Math.PI * 2); ctx.fillStyle = "#F8FAFC"; ctx.fill();
+    ctx.strokeStyle = "#E2E8F0"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = "#0F172A"; ctx.font = "bold 13px 'Plus Jakarta Sans', Inter, sans-serif"; ctx.textAlign = "center";
+    ctx.fillText("Costs", cx, cy + 5);
     parts.forEach((p, i) => {
-      ctx.fillStyle = p.color; ctx.fillRect(cx + r + 30, 60 + i * 30, 12, 12);
-      ctx.fillStyle = "#334155"; ctx.font = "11px Poppins, sans-serif"; ctx.textAlign = "left";
-      ctx.fillText(`${p.label}: ₹${Math.round(p.value)}`, cx + r + 50, 70 + i * 30);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(cx + r + 24, 62 + i * 32, 14, 14, 4); else ctx.rect(cx + r + 24, 62 + i * 32, 14, 14);
+      ctx.fill();
+      ctx.fillStyle = "#0F172A"; ctx.font = "600 12px 'Plus Jakarta Sans', Inter, sans-serif"; ctx.textAlign = "left";
+      ctx.fillText(`${p.label}: ₹${Math.round(p.value).toLocaleString()}`, cx + r + 46, 74 + i * 32);
     });
   }
 
   // ---------- Fleet AI Assistant ----------
   (function chatInit() {
     const log = $("chatLog");
+    const sendBtn = $("chatSend");
+    const inputEl = $("chatInput");
+    if (!log || !sendBtn || !inputEl) return;
+
+    // Reset log content to ensure exactly one greeting is shown
+    log.innerHTML = "";
+
     const say = (who, text) => {
       const div = document.createElement("div");
       div.className = "chat-msg " + who;
@@ -299,14 +335,14 @@ export default function startIntelligence() {
       return "I can help with: high-risk vehicles, maintenance summary, best vehicle for a trip, license/compliance, fuel efficiency, delays, drivers, availability, and costs.";
     };
     const send = () => {
-      const q = $("chatInput").value.trim();
+      const q = inputEl.value.trim();
       if (!q) return;
       say("user", q);
-      $("chatInput").value = "";
+      inputEl.value = "";
       setTimeout(() => say("bot", answer(q)), 250);
     };
-    $("chatSend").addEventListener("click", send);
-    $("chatInput").addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
+    sendBtn.onclick = send;
+    inputEl.onkeydown = (e) => { if (e.key === "Enter") send(); };
   })();
 
   // ---------- Live simulated positions (client-side) ----------

@@ -4,23 +4,33 @@ import { useFleet } from "../fleetStore.jsx";
 export default function Maintenance() {
   const { state, addMaintenance } = useFleet();
   const [form, setForm] = useState({ vehicle_id: "", cost: "", date: "", description: "" });
+  const [error, setError] = useState("");
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    addMaintenance({ ...form, vehicle_id: Number(form.vehicle_id), cost: Number(form.cost) });
-    setForm({ vehicle_id: "", cost: "", date: "", description: "" });
+    setError("");
+    try {
+      await addMaintenance({ ...form, cost: Number(form.cost) });
+      setForm({ vehicle_id: "", cost: "", date: "", description: "" });
+    } catch (err) {
+      setError(err.message);
+    }
   };
+
+  // vehicle_id on maintenance records is a populated object or id string
+  const vehicleOf = (m) => typeof m.vehicle_id === "object" ? m.vehicle_id : state.vehicles.find((v) => v._id === String(m.vehicle_id));
 
   return (
     <>
       <div className="topbar"><h1>Maintenance Module</h1></div>
+      {error && <div className="flash flash-error">{error}</div>}
       <div className="form-card">
         <h3>Create Maintenance Log</h3>
         <form onSubmit={submit} className="form-grid mt-10">
           <div className="input-group"><label>Vehicle</label>
             <select required value={form.vehicle_id} onChange={(e) => setForm({ ...form, vehicle_id: e.target.value })}>
               <option value="">Select vehicle</option>
-              {state.vehicles.map((v) => <option key={v.id} value={v.id}>{v.license_plate} ({v.status})</option>)}
+              {state.vehicles.map((v) => <option key={v._id} value={v._id}>{v.license_plate} ({v.status})</option>)}
             </select>
           </div>
           <div className="input-group"><label>Cost</label><input type="number" step="0.01" value={form.cost} required onChange={(e) => setForm({ ...form, cost: e.target.value })} /></div>
@@ -31,12 +41,12 @@ export default function Maintenance() {
       </div>
       <div className="table-wrap">
         <table>
-          <thead><tr><th>ID</th><th>Vehicle</th><th>Description</th><th>Cost</th><th>Date</th></tr></thead>
+          <thead><tr><th>Vehicle</th><th>Description</th><th>Cost</th><th>Date</th></tr></thead>
           <tbody>
-            {state.maintenance.length === 0 && <tr><td colSpan="5">No maintenance logs found.</td></tr>}
+            {state.maintenance.length === 0 && <tr><td colSpan="4">No maintenance logs found.</td></tr>}
             {state.maintenance.map((m) => {
-              const v = state.vehicles.find((x) => x.id === Number(m.vehicle_id));
-              return <tr key={m.id}><td>#{m.id}</td><td>{v?.license_plate}</td><td>{m.description}</td><td>₹{m.cost}</td><td>{m.date}</td></tr>;
+              const v = vehicleOf(m);
+              return <tr key={m._id}><td>{v?.license_plate}</td><td>{m.description}</td><td>₹{m.cost}</td><td>{m.date}</td></tr>;
             })}
           </tbody>
         </table>
