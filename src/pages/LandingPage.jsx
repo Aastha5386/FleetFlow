@@ -74,7 +74,7 @@ export default function LandingPage() {
                   Dashboard
                 </Link>
                 <button type="button" onClick={handleLogout} className="btn-nav-secondary">
-                  Sign Out
+                  Logout
                 </button>
               </>
             ) : (
@@ -140,7 +140,7 @@ export default function LandingPage() {
                     Dashboard
                   </Link>
                   <button type="button" onClick={handleLogout} className="btn-nav-secondary mobile-btn">
-                    Sign Out
+                    Logout
                   </button>
                 </>
               ) : (
