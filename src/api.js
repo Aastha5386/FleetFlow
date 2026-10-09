@@ -85,11 +85,13 @@ async function request(path, options = {}) {
     if (!res.ok) throw new Error(data.message || `Request failed: ${res.status}`);
     return data;
   } catch (err) {
-    // If server is not responding / connection refused, seamlessly use local authenticated store
-    if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError") || err.message.includes("404")) {
+    // If backend server is not running, connection refused, or proxy 500/502/504 error,
+    // seamlessly use local fallback so data is never blank
+    try {
       return handleLocalFallback(path, options);
+    } catch (fallbackErr) {
+      throw fallbackErr || err;
     }
-    throw err;
   }
 }
 
