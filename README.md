@@ -32,7 +32,6 @@
 9. [Environment Configuration](#environment-configuration)
 10. [REST API Documentation](#rest-api-documentation)
 11. [Deployment & Production Build](#deployment--production-build)
-12. [Authors & Acknowledgments](#authors--acknowledgments)
 
 ---
 
@@ -365,9 +364,3 @@ npm start
    - `MONGO_URI`: *Your MongoDB Atlas connection URI*
    - `JWT_SECRET`: *A secure random string*
    - `NODE_ENV`: `production`
-
----
-
-## Authors & Acknowledgments
-
-Developed by **Aastha** for modern, data-driven logistics and intelligent fleet management operations. All rights reserved.
