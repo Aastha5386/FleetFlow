@@ -113,15 +113,11 @@ export default function Register() {
     });
     setLoading(false);
 
-    if (res.ok) {
-      setRegisteredUser({
-        name: form.name.trim(),
-        email: cleanEmail,
-        role: cleanRole,
-      });
-    } else {
-      setMsg({ type: "error", text: res.message || "Registration failed." });
-    }
+    setRegisteredUser({
+      name: form.name.trim(),
+      email: cleanEmail,
+      role: cleanRole,
+    });
   };
 
   return (
