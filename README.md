@@ -32,7 +32,7 @@
 9. [Environment Configuration](#environment-configuration)
 10. [REST API Documentation](#rest-api-documentation)
 11. [Deployment & Production Build](#deployment--production-build)
-12. [License & Acknowledgments](#license--acknowledgments)
+12. [Authors & Acknowledgments](#authors--acknowledgments)
 
 ---
 
@@ -368,8 +368,6 @@ npm start
 
 ---
 
-## License & Acknowledgments
+## Authors & Acknowledgments
 
-This project is licensed under the [MIT License](LICENSE).
-
-Developed for modern, data-driven logistics operations.
+Developed by **Aastha** for modern, data-driven logistics and intelligent fleet management operations. All rights reserved.
